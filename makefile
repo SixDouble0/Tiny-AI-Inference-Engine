@@ -12,8 +12,12 @@ test_conv2d: src/ops/conv2d.c tests/unity/unity.c tests/test_conv2d.c
 
 test_im2col: src/ops/im2col.c src/ops/conv2d.c src/ops/gemm.c tests/unity/unity.c tests/test_im2col.c
 	$(CC) $(CFLAGS) src/ops/im2col.c src/ops/conv2d.c src/ops/gemm.c tests/unity/unity.c tests/test_im2col.c -o test_im2col.exe
+
+test_relu: src/ops/relu.c tests/unity/unity.c tests/test_relu.c
+	$(CC) $(CFLAGS) src/ops/relu.c tests/unity/unity.c tests/test_relu.c -o test_relu.exe
 clean:
 	del test_arena.exe
 	del test_gemm.exe
 	del test_conv2d.exe
 	del test_im2col.exe
+	del test_relu.exe
