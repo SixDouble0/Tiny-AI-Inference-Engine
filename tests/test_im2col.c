@@ -1,6 +1,7 @@
 #include "unity/unity.h"
 #include "../src/ops/im2col.h"
 #include "../src/ops/conv2d.h"
+#include "../src/ops/gemm.h"
 
 void setUp(void) {}
 void tearDown(void) {}
@@ -54,8 +55,48 @@ void im2col_test(void) {
     }
 }
 
+void im2col_vs_conv2d_test(void) {
+    int in_h = 4, in_w = 4, in_ch = 1;
+    int kernel_h = 2, kernel_w = 2;
+    int stride = 1, padding = 0;
+    int out_ch = 1;
+
+    int8_t input[16] = {
+        1,  2,  3,  4,
+        5,  6,  7,  8,
+        9,  10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int8_t weights[4] = { 1, 0, 0, 1 };  // filter 2x2
+
+    //naive conv2d
+    int32_t output_naive[9] = {0};
+    conv2d(input, weights, output_naive,
+           in_h, in_w, in_ch, out_ch,
+           kernel_h, kernel_w, stride, padding);
+
+    // im2col + gemm
+    int8_t col[36] = {0};
+    int32_t output_fast[9] = {0};
+
+    
+    im2col(input, col, in_h, in_w, in_ch, kernel_h, kernel_w, stride, padding);
+
+    //             A[9×4]  B[4×1]   C[9×1]       M=9  N=1     K=4
+    gemm_optimized(col,    weights, output_fast, 9,   out_ch, kernel_h * kernel_w * in_ch);
+
+
+    // Comparison
+    for (int i = 0; i < 9; i++) {
+        TEST_ASSERT_EQUAL_INT32(output_naive[i], output_fast[i]);
+    }
+}
+
 int main(){
     UNITY_BEGIN();
     RUN_TEST(im2col_test);
+    RUN_TEST(im2col_vs_conv2d_test);
     return UNITY_END();
 }
+
