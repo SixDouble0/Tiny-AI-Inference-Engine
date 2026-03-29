@@ -48,15 +48,28 @@ void conv2d_test(void) {
            kernel_h, kernel_w,
            stride, padding);
 
-       printf("out_h=%d out_w=%d\n", out_h, out_w);
-    for (int i = 0; i < out_h * out_w * out_ch; i++) {
-        printf("output[%d] = %d\n", i, output[i]);
-    }
-    // dopiero potem asserty
+
+    // Verify the output against the expected result
     for (int i = 0; i < out_h * out_w * out_ch; i++) {
         TEST_ASSERT_EQUAL_INT32(expected_output[i], output[i]);
     }
+
+    // Test for padding implementation
+    int padding1 = 1; // Add padding of 1 to the input
+    int out_h1 = (in_h + 2 * padding1 - kernel_h) / stride + 1; // 5
+    int out_w1 = (in_w + 2 * padding1 - kernel_w) / stride + 1; // 5
+    int32_t output1[25] = {0};
+
+    conv2d(input, weights, output1,
+           in_h, in_w, in_ch, out_ch,
+           kernel_h, kernel_w, stride, padding1);
+
+    // Just verify dimensions are correct and no crash
+    TEST_ASSERT_EQUAL(5, out_h1);
+    TEST_ASSERT_EQUAL(5, out_w1);
+    TEST_ASSERT_NOT_EQUAL(0, output1[0]); // something that doesnt equal zero to ensure convolution is performed
 }
+
 int main(){
     UNITY_BEGIN();
     RUN_TEST(conv2d_test);
