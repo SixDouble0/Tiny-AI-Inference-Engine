@@ -18,6 +18,10 @@ test_relu: src/ops/relu.c tests/unity/unity.c tests/test_relu.c
 
 test_requantize: src/ops/requantize.c tests/unity/unity.c tests/test_requantize.c
 	$(CC) $(CFLAGS) src/ops/requantize.c tests/unity/unity.c tests/test_requantize.c -o test_requantize.exe
+
+test_softmax: src/ops/softmax.c tests/unity/unity.c tests/test_softmax.c
+	$(CC) $(CFLAGS) src/ops/softmax.c tests/unity/unity.c tests/test_softmax.c -o test_softmax.exe
+
 clean:
 	del test_arena.exe
 	del test_gemm.exe
@@ -25,3 +29,4 @@ clean:
 	del test_im2col.exe
 	del test_relu.exe
 	del test_requantize.exe
+	del test_softmax.exe

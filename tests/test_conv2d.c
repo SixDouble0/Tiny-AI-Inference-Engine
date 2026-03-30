@@ -70,7 +70,7 @@ void conv2d_test(void) {
     TEST_ASSERT_NOT_EQUAL(0, output1[0]); // something that doesnt equal zero to ensure convolution is performed
 }
 
-int main(){
+int main(void){
     UNITY_BEGIN();
     RUN_TEST(conv2d_test);
     return UNITY_END();

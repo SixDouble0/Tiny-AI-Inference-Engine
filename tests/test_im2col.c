@@ -125,7 +125,7 @@ void benchmark_im2col_vs_conv2d(void) {
     end = clock();
     printf("im2col+gemm:  %f ms\n", (double)(end-start)/CLOCKS_PER_SEC*1000/1000);
 }
-int main(){
+int main(void){
     UNITY_BEGIN();
     RUN_TEST(im2col_test);
     RUN_TEST(im2col_vs_conv2d_test);
